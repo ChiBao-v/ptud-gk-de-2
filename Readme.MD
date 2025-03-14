@@ -46,3 +46,4 @@ http://127.0.0.1:5000
 ## 4. Hướng dẫn chạy bằng script
 - Đầu tiên sau khi tải file code về máy thì di chuyển đến thư mục dự án của mình trên cmd.
 - Chạy lệnh **install.bat** trên cmd.
+- Sau đó nhấn vào link: http://127.0.0.1:5000
