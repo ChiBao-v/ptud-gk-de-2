@@ -27,8 +27,9 @@
 ## 3. Hướng dẫn Cài đặt
 ### 🔹 Bước 1: Clone Repository
 ```sh
-git clone https://github.com/yourusername/ptud-gk-de-2.git
+git clone git clone https://github.com/yourusername/ptud-gk-de-2.git
 cd ptud-gk-de-2
+
 ```
 
 ### 🔹 Bước 2: Tạo Virtual Environment & Cài Đặt Dependencies
