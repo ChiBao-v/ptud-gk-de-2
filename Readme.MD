@@ -39,6 +39,7 @@ cd ptud-gk-de-2
 ### 🔹 Bước 3: **Truy cập ứng dụng trên trình duyệt**
    ```
    http://127.0.0.1:5000
+
 ---
 
 ## 4. Hướng dẫn chạy bằng script
