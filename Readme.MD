@@ -32,20 +32,14 @@ cd ptud-gk-de-2
 
 ```
 
-### 🔹 Bước 2: Tạo Virtual Environment & Cài Đặt Dependencies
-```sh
-python -m venv venv
-source venv/bin/activate  # Trên macOS/Linux
-venv\Scripts\activate    # Trên Windows
-pip install -r requirements.txt
-```
+### 🔹 Bước 2: **Chạy ứng dụng Flask**
+   ```bash
+   python app.py
+   ```
+### 🔹 Bước 3: **Truy cập ứng dụng trên trình duyệt**
+   ```
+   http://127.0.0.1:5000
 
-### 🔹 Bước 3: Chạy Ứng Dụng
-```sh
-flask run
-```
-
-Ứng dụng sẽ chạy tại: `http://127.0.0.1:5000/`
-
-
-
+## 4. Hướng dẫn chạy bằng script
+- Đầu tiên sau khi tải file code về máy thì di chuyển đến thư mục dự án của mình trên cmd
+- Chạy lệnh **install.bat** trên cmd 
