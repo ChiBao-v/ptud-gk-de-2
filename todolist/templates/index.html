@@ -1,0 +1,231 @@
+{% extends "base.html" %} {% block title %}Trang chủ{% endblock %} {% block
+content %}
+
+<div
+  class="container"
+  style="
+    min-height: 80vh;
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    padding-top: 30px;
+    padding-bottom: 30px;
+    border-radius: 15px;
+  "
+>
+  <div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+      <!-- Hiển thị Avatar và cảnh báo -->
+<div class="mb-3 position-relative">
+  <label for="avatarInput" style="cursor: pointer">
+      <img
+          src="{{ url_for('views.uploaded_avatar', filename=current_user.avatar) }}"
+          alt="Avatar"
+          style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid #1e88e5;"
+      />
+  </label>
+  {% if overdue_notes > 0 %}
+  <span 
+      class="badge badge-danger position-absolute"
+      style="top: 0; right: 0; font-size: 14px; padding: 5px 10px; border-radius: 50%;"
+  >
+      {{ overdue_notes }}
+  </span>
+  {% endif %}
+</div>
+      <!-- Form cập nhật Avatar (ẩn input file) -->
+      <form
+        action="{{ url_for('views.upload_avatar') }}"
+        method="post"
+        enctype="multipart/form-data"
+        id="avatarForm"
+        style="display: none"
+      >
+        <input
+          type="file"
+          name="avatar"
+          id="avatarInput"
+          accept="image/*"
+          required
+        />
+      </form>
+
+      <h1
+        class="mb-4"
+        style="
+          font-weight: 600;
+          color: #1e88e5;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        "
+      >
+        Danh sách của bạn
+      </h1>
+    </div>
+  </div>
+
+  <!-- Danh sách ghi chú -->
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 style="color: #333">Danh sách quản lý công việc</h5>
+      <button
+        type="button"
+        class="btn btn-danger"
+        id="delete-selected"
+        onclick="deleteSelectedNotes()"
+        style="border-radius: 8px; padding: 8px 15px; display: none"
+      >
+        <i class="fas fa-trash-alt mr-2"></i>Xóa
+      </button>
+    </div>
+
+    <ul
+      class="list-group shadow-lg"
+      id="notes"
+      style="border-radius: 15px; overflow: hidden"
+    >
+      {% if notes %} {% for note in notes %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div style="max-width: 100%; word-wrap: break-word">
+          <p style="color: #333; font-size: 16px; white-space: pre-line">
+            {{ note.data | urlize(target="_blank") | safe }}
+          </p>
+
+          <!-- Hiển thị ngày tạo -->
+          <small class="text-muted">🕒 Tạo lúc: {{ note.created.strftime('%d/%m/%Y %H:%M') }}</small><br>
+
+          <!-- Hiển thị ngày hoàn thành (nếu có) -->
+          {% if note.finished %}
+          <small class="text-success">✅ Hoàn thành lúc: {{ note.finished.strftime('%d/%m/%Y %H:%M') }}</small>
+          {% endif %}
+
+          <!-- Hiển thị trạng thái -->
+          <small class="font-weight-bold" style="color: {{ 'green' if note.is_finished else 'red' }}">
+            {{ "Đã hoàn thành" if note.is_finished else "Chưa hoàn thành" }}
+          </small>
+
+          {% if note.image %}
+          <img
+            src="{{ url_for('views.uploaded_file', filename=note.image) }}"
+            alt="Hình ảnh ghi chú"
+            style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 5px;"
+          />
+          {% endif %}
+        </div>
+
+        <div class="d-flex align-items-center">
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-success mr-2"
+            onclick="markAsFinished({{ note.id }})"
+            {% if note.is_finished %}disabled{% endif %}
+          >
+            <i class="fas fa-check"></i>
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-primary mr-2"
+            onclick="openEditModal({{ note.id }}, '{{ note.data }}')"
+          >
+            <i class="fas fa-edit"></i>
+          </button>
+          <input
+            type="checkbox"
+            name="note-checkbox"
+            value="{{ note.id }}"
+            class="ml-3"
+            onchange="toggleDeleteButton()"
+          />
+        </div>
+      </li>
+      {% endfor %} {% else %}
+      <li class="list-group-item text-center text-muted">
+        Chưa có ghi chú nào! Hãy thêm một ghi chú mới.
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</div>
+
+<script>
+  function markAsFinished(noteId) {
+    fetch(`/finish_note/${noteId}`, {
+      method: "POST",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          location.reload(); // Reload trang sau khi cập nhật
+        } else {
+          alert("Có lỗi xảy ra, vui lòng thử lại!");
+        }
+      });
+  }
+</script>
+
+
+      <!-- Form thêm ghi chú -->
+      <form
+        method="POST"
+        enctype="multipart/form-data"
+        class="mt-5 shadow-lg p-4"
+        style="background: #ffffff; border-radius: 15px"
+      >
+        <div class="form-group mb-4">
+          <label for="note" class="font-weight-bold">Nhập ghi chú mới:</label>
+          <textarea
+            name="note"
+            id="note"
+            class="form-control"
+            rows="3"
+            placeholder="Nhập ghi chú mới..."
+            required
+            style="resize: none"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="image" class="font-weight-bold"
+            >Thêm hình ảnh (tuỳ chọn):</label
+          >
+          <input
+            type="file"
+            name="image"
+            id="image"
+            class="form-control-file"
+          />
+        </div>
+
+        <div class="form-group mb-4">
+    <label for="due_date" class="font-weight-bold">Hạn chót (tuỳ chọn):</label>
+    <input type="date" name="due_date" id="due_date" class="form-control">
+</div>
+
+<div class="text-center">
+    <button
+        type="submit"
+        class="btn btn-primary"
+        style="
+            border-radius: 8px;
+            background: linear-gradient(90deg, #1e88e5, #42a5f5);
+            border: none;
+            padding: 10px 20px;
+        "
+    >
+        <i class="fas fa-plus mr-2"></i>Thêm ghi chú
+    </button>
+</div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+  document
+    .getElementById("avatarInput")
+    .addEventListener("change", function () {
+      document.getElementById("avatarForm").submit();
+    });
+</script>
+
+{% endblock %}

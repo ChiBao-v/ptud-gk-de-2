@@ -1,0 +1,55 @@
+{% extends "base.html" %} {% block title %}Quản lý người dùng{% endblock %} {%
+block content %}
+<div class="container" style="padding-top: 30px; padding-bottom: 30px">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <h1 class="text-center mb-5">Quản lý người dùng</h1>
+      <table class="table table-striped shadow-lg">
+        <thead class="thead-dark">
+          <tr>
+            <th>Email</th>
+            <th>Tên người dùng</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+          <tr>
+            <td>{{ user.email }}</td>
+            <td>{{ user.user_name }}</td>
+            <td>{{ "Khóa" if user.is_blocked else "Hoạt động" }}</td>
+            <td>
+              <form
+                method="POST"
+                action="/admin/block_user/{{ user.id }}"
+                style="display: inline"
+              >
+                <button
+                  type="submit"
+                  class="btn btn-sm {{ 'btn-danger' if not user.is_blocked else 'btn-success' }}"
+                >
+                  <i
+                    class="fas {{ 'fa-lock' if not user.is_blocked else 'fa-unlock' }} mr-1"
+                  ></i>
+                  {{ "Khóa" if not user.is_blocked else "Mở khóa" }}
+                </button>
+              </form>
+              <form
+                method="POST"
+                action="/admin/reset_password/{{ user.id }}"
+                style="display: inline"
+              >
+                <button type="submit" class="btn btn-sm btn-warning ml-2">
+                  <i class="fas fa-key mr-1"></i>Reset mật khẩu
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
