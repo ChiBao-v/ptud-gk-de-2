@@ -40,14 +40,7 @@ venv\Scripts\activate    # Trên Windows
 pip install -r requirements.txt
 ```
 
-### 🔹 Bước 3: Thiết lập Database
-```sh
-flask db init
-flask db migrate -m "Initial migration"
-flask db upgrade
-```
-
-### 🔹 Bước 4: Chạy Ứng Dụng
+### 🔹 Bước 3: Chạy Ứng Dụng
 ```sh
 flask run
 ```
